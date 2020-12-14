@@ -8,14 +8,45 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    // MARK: - PROPERTIES
+    
+    var fruits : [Fruit] = fruitData
+    @State private var isShowingSetting : Bool = false
+    
+    // MARK: - BODY
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
-    }
+        NavigationView {
+            List {
+                ForEach(fruits.shuffled()) { item in
+                    NavigationLink(destination: FruitDetailsView(fruits: item)) {
+                        FruitRowView(fruits: item)
+                            .padding(.vertical, 4)
+                }
+                }
+            }  //: List
+            .navigationTitle("Fruits")
+                .navigationBarItems(trailing:
+                                        Button(action: {
+                                            isShowingSetting = true
+                                        }) {
+                                            Image(systemName: "slider.horizontal.3")
+                                        }
+                )  //:  Nav Bar Item
+                .sheet(isPresented: $isShowingSetting, content: {
+                    SettingSheet()
+                })
+        } .navigationViewStyle(StackNavigationViewStyle())
+        //: NavigationView
 }
+
+    // MARK: - PREVIEW
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(fruits: fruitData)
+            .previewDevice("iphone 11")
     }
+}
 }
